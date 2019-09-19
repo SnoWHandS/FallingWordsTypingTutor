@@ -26,7 +26,11 @@ public class WordApp {
 
 	static WordRecord[] words;
 	static volatile boolean done;  //must be volatile
-	static 	Score score = new Score();
+	static Score score = new Score();
+	//Create threadpool for GUI elements
+	static Thread[] threadPool;
+	//Create pool of animation objects
+	static Animate[] animationPool;
 
 	static WordPanel w;
 	
@@ -60,11 +64,16 @@ public class WordApp {
 	    //[snip]
   
 	    final JTextField textEntry = new JTextField("",20);
-	   textEntry.addActionListener(new ActionListener()
-	    {
-	      public void actionPerformed(ActionEvent evt) {
+	    textEntry.addActionListener(new ActionListener(){
+	      public void actionPerformed(ActionEvent evt){
 	          String text = textEntry.getText();
-	          //[snip]
+			  //[snip]
+			  //If text.equals(TextOnScreen) - Remove textOnScreen
+			  for(int i=0; i<noWords; i++){
+			  	if(words[i].matchWord(text)){
+					System.out.println("You scored!");
+				}
+			  }
 	          textEntry.setText("");
 	          textEntry.requestFocus();
 	      }
@@ -83,7 +92,10 @@ public class WordApp {
 		    {
 		      public void actionPerformed(ActionEvent e)
 		      {
-		    	  //[snip]
+				  //[snip]
+				  	for (Thread thread : threadPool){
+						thread.start();
+				  	}
 		    	  textEntry.requestFocus();  //return focus to the text entry field
 		      }
 		    });
@@ -94,7 +106,11 @@ public class WordApp {
 			    {
 			      public void actionPerformed(ActionEvent e)
 			      {
-			    	  //[snip]
+					  //[snip]
+					  
+					  	for(Animate animation : animationPool){
+							animation.setRunning(false);
+						}
 			      }
 			    });
 		
@@ -151,6 +167,7 @@ public static String[] getDictFromFile(String filename) {
 		
 		setupGUI(frameX, frameY, yLimit);  
     	//Start WordPanel thread - for redrawing animation
+		(new Thread(w)).start();
 
 		int x_inc=(int)frameX/noWords;
 	  	//initialize shared array of current words
@@ -158,6 +175,18 @@ public static String[] getDictFromFile(String filename) {
 		for (int i=0;i<noWords;i++) {
 			words[i]=new WordRecord(dict.getNewWord(),i*x_inc,yLimit);
 		}
+
+		threadPool = new Thread[noWords];
+		animationPool = new Animate[noWords];
+
+		//instanciate the objects with threads
+		for (int i=0; i<noWords;i++) {
+			//Create animation object
+			animationPool[i] = new Animate(w, score, i);
+			//Add animation to thread
+			threadPool[i] = new Thread(animationPool[i]);
+		}
+		
 
 
 	}
