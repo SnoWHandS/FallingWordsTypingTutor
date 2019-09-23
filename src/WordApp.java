@@ -155,7 +155,7 @@ public static String[] getDictFromFile(String filename) {
 		totalWords=Integer.parseInt(args[0]);  //total words to fall
 		noWords=Integer.parseInt(args[1]); // total words falling at any point
 		assert(totalWords>=noWords); // this could be done more neatly
-		String[] tmpDict=getDictFromFile("../input/"+args[2]); //file of words
+		String[] tmpDict=getDictFromFile("./input/"+args[2]); //file of words
 		if (tmpDict!=null)
 			dict= new WordDictionary(tmpDict);
 		
