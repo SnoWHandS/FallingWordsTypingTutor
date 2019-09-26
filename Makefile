@@ -14,9 +14,9 @@ DOC=doc
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -sourcepath $(SRCDIR) -d $(BINDIR)/ -cp $(BINDIR) $<
 
-CLASSES= Score.class WordDictionary.class WordRecord.class WordPanel.class Animate.class WordApp.class
+CLASSES= Score.class WordDictionary.class WordRecord.class WordPanel.class Animate.class WordMatch.class WordApp.class
 
-JAVAS= Score.java WordDictionary.java WordRecord.java WordPanel.java Animate.java WordApp.java
+JAVAS= Score.java WordDictionary.java WordRecord.java WordPanel.java Animate.java WordMatch.java WordApp.java
 
 CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
 

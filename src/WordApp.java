@@ -34,7 +34,10 @@ public class WordApp {
 
 	static WordPanel w;
 	
-	
+	//state for if reset or not
+	static boolean reset = false;
+	//state to indicate run status
+	static boolean running = false;
 	
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
 		// Frame init and dimensions
@@ -69,11 +72,17 @@ public class WordApp {
 	          String text = textEntry.getText();
 			  //[snip]
 			  //If text.equals(TextOnScreen) - Remove textOnScreen
+
+			  /*
 			  for(int i=0; i<noWords; i++){
 			  	if(words[i].matchWord(text)){
 					System.out.println("You scored!");
+					score.caughtWord(words[i].getWord().length());
+					w.repaint();
 				}
-			  }
+			  }*/
+			  (new Thread(new WordMatch(text, w, score))).start();
+
 	          textEntry.setText("");
 	          textEntry.requestFocus();
 	      }
@@ -93,9 +102,31 @@ public class WordApp {
 		      public void actionPerformed(ActionEvent e)
 		      {
 				  //[snip]
-				  	for (Thread thread : threadPool){
+				if(!running){
+					//If restarting
+					if(reset){
+						score.resetScore();
+						w.setRunning(true);
+						(new Thread(w)).start();
+						for (WordRecord word : w.getWords()) {
+							word.resetWord();
+						}
+						for (Animate animate : animationPool) {
+							animate.setRunning(true);
+						}
+						for (int i=0; i<noWords;i++) {
+							threadPool[i] = new Thread(animationPool[i]);
+						} 		
+					}
+					if (!reset) {
+						//At first start, set reset state to true so reset will occur when hit again
+						reset = true;
+					}
+					running = true;
+					for (Thread thread : threadPool){
 						thread.start();
 				  	}
+				}
 		    	  textEntry.requestFocus();  //return focus to the text entry field
 		      }
 		    });
@@ -106,11 +137,13 @@ public class WordApp {
 			    {
 			      public void actionPerformed(ActionEvent e)
 			      {
-					  //[snip]
-					  
-					  	for(Animate animation : animationPool){
+					  	//[snip]
+						running = false;
+						for(Animate animation : animationPool){
 							animation.setRunning(false);
 						}
+						w.setRunning(false);
+						score.resetScore();
 			      }
 			    });
 		
