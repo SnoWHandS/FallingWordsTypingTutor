@@ -32,16 +32,28 @@ public class WordApp {
 	//Create pool of animation objects
 	static Animate[] animationPool;
 
+	//Create UI Thread object
+	static UIThread uiThread;
+
 	static WordPanel w;
-	
+	static JPanel txt;
+	static JFrame frame;
+
 	//state for if reset or not
 	static boolean reset = false;
 	//state to indicate run status
 	static boolean running = false;
+	//State to indicate if the win message has been shown
+	static boolean dialogShown = false;
+
+	//Make GUI elements global
+	static JLabel caught;
+	static JLabel missed;
+	static JLabel scr;
 	
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
 		// Frame init and dimensions
-    	JFrame frame = new JFrame("WordGame"); 
+    	frame = new JFrame("WordGame"); 
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	frame.setSize(frameX, frameY);
     	
@@ -55,15 +67,14 @@ public class WordApp {
 	    g.add(w);
 	    
 	    
-	    JPanel txt = new JPanel();
+	    txt = new JPanel();
 	    txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS)); 
-	    JLabel caught =new JLabel("Caught: " + score.getCaught() + "    ");
-	    JLabel missed =new JLabel("Missed:" + score.getMissed()+ "    ");
-	    JLabel scr =new JLabel("Score:" + score.getScore()+ "    ");    
+	    caught =new JLabel("Caught: " + score.getCaught() + "    ");
+	    missed =new JLabel("Missed:" + score.getMissed()+ "    ");
+	    scr =new JLabel("Score:" + score.getScore()+ "    ");    
 	    txt.add(caught);
 	    txt.add(missed);
 	    txt.add(scr);
-    
 	    //[snip]
   
 	    final JTextField textEntry = new JTextField("",20);
@@ -139,16 +150,24 @@ public class WordApp {
 			      {
 					  	//[snip]
 						running = false;
-						for(Animate animation : animationPool){
-							animation.setRunning(false);
-						}
-						w.setRunning(false);
+						stopThreads();
 						score.resetScore();
+						resetStates();
 			      }
-			    });
-		
+				});
+				
+		JButton quitB = new JButton("Quit");;
+				quitB.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e){
+						running = false;
+						stopThreads();
+						System.exit(0);
+					}
+				});
+
 		b.add(startB);
 		b.add(endB);
+		b.add(quitB);
 		
 		g.add(b);
     	
@@ -211,6 +230,7 @@ public static String[] getDictFromFile(String filename) {
 
 		threadPool = new Thread[noWords];
 		animationPool = new Animate[noWords];
+		//uiThread = new UIThread(caught, missed, scr, score);
 
 		//instanciate the objects with threads
 		for (int i=0; i<noWords;i++) {
@@ -219,9 +239,38 @@ public static String[] getDictFromFile(String filename) {
 			//Add animation to thread
 			threadPool[i] = new Thread(animationPool[i]);
 		}
-		
+		//threadPool[noWords] = new Thread(uiThread);
 
+		while(true){
+			updateScores();
+			if(score.getCaught()>=totalWords){
+				updateScores();
+				stopThreads();
+				if(!dialogShown){
+					JOptionPane.showMessageDialog(frame, "Congratulations!, You won with a score of "+score.getScore(), "Congratulations!",1);
+					dialogShown = true;
+				}
+			}
+		}
+	}
 
+	public static void stopThreads(){
+		for(Animate animation : animationPool){
+			animation.setRunning(false);
+		}
+		w.setRunning(false);
+	}
+
+	public static void resetStates(){
+		dialogShown = false;
+		running = false;
+		//reset = false;
+	}
+
+	public static void updateScores(){
+		caught.setText("Caught: " + score.getCaught() + "    ");
+	    missed.setText("Missed:" + score.getMissed()+ "    ");
+	    scr.setText("Score:" + score.getScore()+ "    ");	
 	}
 
 }

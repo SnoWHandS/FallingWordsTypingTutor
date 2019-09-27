@@ -25,15 +25,11 @@ public class WordPanel extends JPanel implements Runnable {
 		g.clearRect(0,0,width,height);
 		g.setColor(Color.red);
 		g.fillRect(0,maxY-10,width,height);
-
 		g.setColor(Color.black);
 		g.setFont(new Font("Helvetica", Font.PLAIN, 26));
 		//draw the words
-		//animation must be added 
 		for (int i=0;i<noWords;i++){	    	
 			g.drawString(words[i].getWord(),words[i].getX(),words[i].getY());	
-			//words[i].drop(1);
-			//g.drawString(words[i].getWord(),words[i].getX(),words[i].getY()+20);  //y-offset for skeleton so that you can see the words	
 		}
 		
 	}
@@ -53,7 +49,6 @@ public class WordPanel extends JPanel implements Runnable {
 	public WordRecord[] getWords () {
 		return this.words;
 	}
-
 
 	public void run() {
 		//add in code to animate this

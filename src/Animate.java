@@ -24,7 +24,7 @@ public class Animate implements Runnable{
         while(running){
             WordRecord currentWords[] = w.getWords();
             //delay to make it human readable
-            for (int delay=0; delay<currentWords[index].getSpeed()/10; delay++){
+            for (int delay=0; delay<currentWords[index].getSpeed()/100; delay++){
                 //delays it for some time
                 try{
                     //System.out.println(currentWords[index].getSpeed()/10);
