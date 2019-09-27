@@ -243,11 +243,11 @@ public static String[] getDictFromFile(String filename) {
 
 		while(true){
 			updateScores();
-			if(score.getCaught()>=totalWords){
+			if(score.getMissed()>=totalWords){
 				updateScores();
 				stopThreads();
 				if(!dialogShown){
-					JOptionPane.showMessageDialog(frame, "Congratulations!, You won with a score of "+score.getScore(), "Congratulations!",1);
+					JOptionPane.showMessageDialog(frame, "Congratulations!, You got a score of "+score.getScore(), "Congratulations!",1);
 					dialogShown = true;
 				}
 			}

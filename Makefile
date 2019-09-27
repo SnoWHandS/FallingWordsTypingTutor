@@ -31,4 +31,4 @@ javadoc:
 	$(JAVADOC) -d $(DOC) $(SRCDIR)/*.java
 
 run:
-	$(JAVA) -cp $(BINDIR) WordApp 1 3 "example_dict.txt"
+	$(JAVA) -cp $(BINDIR) WordApp 5 5 "example_dict.txt"
