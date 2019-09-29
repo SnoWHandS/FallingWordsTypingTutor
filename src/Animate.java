@@ -49,6 +49,14 @@ public class Animate implements Runnable{
                 currentWords[index].resetWord();
                 scr.missedWord();
             }
+            /* For added slowness; but actually makes it look less smooth
+            if(currentWords[index].getY()==250){
+                int newSpeed = currentWords[index].getSpeed()+500;
+                currentWords[index].setSpeed(newSpeed);
+            }*/
+            if(currentWords[index].getY()>330){
+                currentWords[index].setSpeed(1500);
+            }
         }
     }
 }

@@ -8,8 +8,8 @@ public class WordRecord {
 	private boolean dropped;
 	
 	private int fallingSpeed;
-	private static int maxWait=1500;
-	private static int minWait=100;
+	private int maxWait=1500;
+	private int minWait=100;
 
 	public static WordDictionary dict;
 	
@@ -34,7 +34,15 @@ public class WordRecord {
 		this.x=x;
 		this.maxY=maxY;
 	}
+
+	public synchronized void setMaxWait(int max){
+		this.maxWait = max;
+	}
 	
+	public synchronized void setMinWait(int min){
+		this.minWait = min;
+	}
+
 // all getters and setters must be synchronized
 	public synchronized  void setY(int y) {
 		if (y>maxY) {
@@ -66,6 +74,10 @@ public class WordRecord {
 	
 	public synchronized  int getSpeed() {
 		return fallingSpeed;
+	}
+
+	public synchronized  void setSpeed(int speed) {
+		this.fallingSpeed = speed;
 	}
 
 	public synchronized void setPos(int x, int y) {

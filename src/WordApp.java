@@ -50,14 +50,15 @@ public class WordApp {
 	static JLabel caught;
 	static JLabel missed;
 	static JLabel scr;
-	
+	static JPanel g;
+
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
 		// Frame init and dimensions
     	frame = new JFrame("WordGame"); 
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	frame.setSize(frameX, frameY);
     	
-      	JPanel g = new JPanel();
+      	g = new JPanel();
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
       	g.setSize(frameX,frameY);
  
